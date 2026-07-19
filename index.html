@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Opening in Obsidian…</title>
+<style>
+  :root { color-scheme: light dark; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    display: flex; align-items: center; justify-content: center;
+    min-height: 100vh; margin: 0; padding: 24px;
+    background: #f7f7f8; color: #1a1a1a;
+  }
+  @media (prefers-color-scheme: dark) {
+    body { background: #1b1b1d; color: #f0f0f0; }
+    .card { background: #262629 !important; }
+    .path { background: #1b1b1d !important; color: #c9c9cf !important; }
+  }
+  .card {
+    background: #fff; border-radius: 14px; padding: 32px 36px;
+    box-shadow: 0 2px 24px rgba(0,0,0,.10); max-width: 520px; width: 100%;
+    text-align: center;
+  }
+  h1 { font-size: 20px; margin: 0 0 8px; font-weight: 600; }
+  .path {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 13px; background: #f2f2f4; border-radius: 7px;
+    padding: 10px 12px; margin: 16px 0 22px; word-break: break-all; color: #444;
+  }
+  a.btn {
+    display: inline-block; background: #7b5cff; color: #fff;
+    text-decoration: none; padding: 12px 26px; border-radius: 9px;
+    font-weight: 600; font-size: 15px;
+  }
+  a.btn:hover { background: #6a49f0; }
+  .hint { font-size: 13px; color: #777; margin: 20px 0 0; line-height: 1.5; }
+</style>
+</head>
+<body>
+<main class="card">
+  <h1 id="head">Opening in Obsidian…</h1>
+  <div class="path" id="target"></div>
+  <a class="btn" id="go" href="#">Open in Obsidian</a>
+  <p class="hint" id="hint">
+    If nothing happened automatically, click the button above.
+    Your browser may ask permission to open Obsidian — allow it,
+    and tick “always allow” so it stops asking.
+  </p>
+</main>
+<script>
+  // The vault name used in the obsidian:// URI. Change here if the vault is renamed.
+  var VAULT = "kb";
+
+  var raw = location.hash.slice(1);          // encoded, vault-relative note path
+  var head = document.getElementById("head");
+  var target = document.getElementById("target");
+  var go = document.getElementById("go");
+  var hint = document.getElementById("hint");
+
+  if (!raw) {
+    head.textContent = "No note specified";
+    target.textContent = "Add an encoded note path after the # in this URL.";
+    go.style.display = "none";
+    hint.style.display = "none";
+  } else {
+    var uri = "obsidian://open?vault=" + encodeURIComponent(VAULT) + "&file=" + raw;
+    go.href = uri;
+    try { target.textContent = decodeURIComponent(raw); }
+    catch (e) { target.textContent = raw; }
+    // Try immediately; the button is the fallback if the browser blocks it.
+    setTimeout(function () { window.location.href = uri; }, 120);
+  }
+</script>
+</body>
+</html>
